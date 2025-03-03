@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -144,6 +145,27 @@ class BeerEndpointTest {
     }
 
     @Test
+    void testListBeersByStyle() {
+        final String BEER_STYLE = "TEST";
+        BeerDTO testDTO = getSavedTestBeer();
+        testDTO.setBeerStyle(BEER_STYLE);
+
+        webTestClient.post().uri(BeerRouterConfig.BEER_PATH)
+                .body(Mono.just(testDTO), BeerDTO.class)
+                .header("Content-Type", "application/json")
+                .exchange();
+
+        webTestClient.get().uri(UriComponentsBuilder
+                .fromPath(BeerRouterConfig.BEER_PATH)
+                .queryParam("beerStyle", BEER_STYLE).build().toUri())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().valueEquals("Content-Type", "application/json")
+                .expectBody().jsonPath("$.size()").isEqualTo(1);
+
+    }
+
+    @Test
     @Order(1)
     void testGetById() {
         BeerDTO beerDTO = getSavedTestBeer();
@@ -162,7 +184,7 @@ class BeerEndpointTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().valueEquals("Content-type", "application/json")
-                .expectBody().jsonPath("$.size()", hasSize(greaterThan(1)));
+                .expectBody().jsonPath("$.size()").value(greaterThan(1));
     }
 
     public BeerDTO getSavedTestBeer(){
