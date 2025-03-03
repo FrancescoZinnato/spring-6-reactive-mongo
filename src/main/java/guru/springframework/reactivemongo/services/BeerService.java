@@ -5,6 +5,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface BeerService {
+
+    Mono<BeerDTO> findFirstByBeerName(String name);
+
     Flux<BeerDTO> listBeers();
 
     Mono<BeerDTO> saveBeer(Mono<BeerDTO> beerDto);
@@ -18,4 +21,5 @@ public interface BeerService {
     Mono<BeerDTO> patchBeer(String beerId, BeerDTO beerDTO);
 
     Mono<Void> deleteBeerById(String beerId);
+
 }

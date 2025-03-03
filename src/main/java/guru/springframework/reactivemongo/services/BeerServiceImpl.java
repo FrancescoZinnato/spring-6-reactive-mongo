@@ -16,6 +16,11 @@ public class BeerServiceImpl implements BeerService {
     private final BeerRepository beerRepository;
 
     @Override
+    public Mono<BeerDTO> findFirstByBeerName(String beerName) {
+        return beerRepository.findFirstByBeerName(beerName).map(beerMapper::beerToBeerDTO);
+    }
+
+    @Override
     public Flux<BeerDTO> listBeers() {
         return beerRepository.findAll().map(beerMapper::beerToBeerDTO);
     }

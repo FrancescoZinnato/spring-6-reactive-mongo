@@ -35,6 +35,21 @@ class BeerServiceImplTest {
     }
 
     @Test
+    void testFindFirstByBeerName() {
+        BeerDTO beerDto = getSavedBeerDto();
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+        Mono<BeerDTO> foundDto = beerService.findFirstByBeerName(beerDto.getBeerName());
+
+        foundDto.subscribe(dto -> {
+            System.out.println("Found beer: \n" + dto.toString());
+            atomicBoolean.set(true);
+        });
+
+        await().untilTrue(atomicBoolean);
+    }
+
+    @Test
     @DisplayName("Test Update Beer Using Block")
     void testUpdateBlocking() {
         final String newName = "New Beer Name";  // use final so cannot mutate
