@@ -55,7 +55,7 @@ class BeerServiceImplTest {
         Mono<BeerDTO> foundDto = beerService.findFirstByBeerName(beerDto.getBeerName());
 
         foundDto.subscribe(dto -> {
-            System.out.println("Found beer: \n" + dto.toString());
+            System.out.println("Found beer: " + dto.toString());
             atomicBoolean.set(true);
         });
 
