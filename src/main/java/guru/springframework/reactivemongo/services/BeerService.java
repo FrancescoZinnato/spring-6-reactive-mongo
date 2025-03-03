@@ -6,6 +6,8 @@ import reactor.core.publisher.Mono;
 
 public interface BeerService {
 
+    Flux<BeerDTO> findByBeerStyle(String beerStyle);
+
     Mono<BeerDTO> findFirstByBeerName(String name);
 
     Flux<BeerDTO> listBeers();
