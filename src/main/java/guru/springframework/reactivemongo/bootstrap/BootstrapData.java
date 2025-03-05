@@ -1,7 +1,9 @@
 package guru.springframework.reactivemongo.bootstrap;
 
 import guru.springframework.reactivemongo.domain.Beer;
+import guru.springframework.reactivemongo.domain.Customer;
 import guru.springframework.reactivemongo.repositories.BeerRepository;
+import guru.springframework.reactivemongo.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -14,13 +16,16 @@ import java.time.LocalDateTime;
 public class BootstrapData implements CommandLineRunner {
 
     private final BeerRepository beerRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public void run(String... args) throws Exception {
         beerRepository.deleteAll()
-                .doOnSuccess(success -> {
-                    loadBeerData();
-                })
+                .doOnSuccess(success -> loadBeerData())
+                .subscribe();
+
+        customerRepository.deleteAll()
+                .doOnSuccess(success -> loadCustomerData())
                 .subscribe();
     }
 
@@ -64,4 +69,22 @@ public class BootstrapData implements CommandLineRunner {
             }
         });
     }
+
+    private void loadCustomerData() {
+        customerRepository.count().subscribe(count -> {
+            if (count == 0) {
+                Customer customer1 = Customer.builder()
+                        .customerName("Indiana Jones")
+                        .build();
+
+                Customer customer2 = Customer.builder()
+                        .customerName("John Thompson")
+                        .build();
+
+                customerRepository.save(customer1).subscribe();
+                customerRepository.save(customer2).subscribe();
+            }
+        });
+    }
+
 }

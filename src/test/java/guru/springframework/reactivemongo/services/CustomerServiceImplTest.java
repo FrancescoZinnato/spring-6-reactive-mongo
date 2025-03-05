@@ -33,7 +33,7 @@ class CustomerServiceImplTest {
     void testSaveCustomer() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
-        Mono<CustomerDTO> savedMono = customerService.saveCustomer(Mono.just(customerDTO));
+        Mono<CustomerDTO> savedMono = customerService.saveCustomerMono(Mono.just(customerDTO));
 
         savedMono.subscribe(savedDTO -> {
                 System.out.println("Customer Saved with ID: " + savedDTO.getId());
